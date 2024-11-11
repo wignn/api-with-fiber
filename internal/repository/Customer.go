@@ -49,5 +49,7 @@ func (cr *CustomerRepository) Update(ctx context.Context, c *domain.Customer) er
 
 func (cr *CustomerRepository) Delete(ctx context.Context, id string) error {
 	executor := cr.db.Update("customers").
-		Where(goqu.C("id").Eq(id)).Set(goqu.Record{"deleted_at", sql.NullTime{valid: true, Time: time.Now()}}).Executor()
+		Where(goqu.C("id").Eq(id)).Set(goqu.Record{"deleted_at": sql.NullTime{valid: true, Time: time.Now()}}).Executor()
+	_, err := executor.ExecContext(ctx)
+	return err
 }
