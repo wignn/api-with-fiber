@@ -20,7 +20,9 @@ func NewCustomer(con *sql.DB) domain.CustomerRepository {
 }
 
 func (cr *CustomerRepository) Save(ctx context.Context, c *domain.Customer) error {
-	panic("not implemented")
+	executor := cr.db.Insert("customers").Rows(c).Executor()
+	_,err := executor.ExecContext(ctx)
+	return err
 }
 
 func (cr *CustomerRepository) FindAll(ctx context.Context) (result []domain.Customer, err error) {
