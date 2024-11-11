@@ -3,6 +3,8 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"time"
+
 	"github.com/doug-martin/goqu/v9"
 	"github.com/wignn/api-with-fiber/domain"
 )
@@ -10,8 +12,6 @@ import (
 type CustomerRepository struct {
 	db *goqu.Database
 }
-
-
 
 func NewCustomer(con *sql.DB) domain.CustomerRepository {
 	return &CustomerRepository{
@@ -21,7 +21,7 @@ func NewCustomer(con *sql.DB) domain.CustomerRepository {
 
 func (cr *CustomerRepository) Save(ctx context.Context, c *domain.Customer) error {
 	executor := cr.db.Insert("customers").Rows(c).Executor()
-	_,err := executor.ExecContext(ctx)
+	_, err := executor.ExecContext(ctx)
 	return err
 }
 
@@ -31,7 +31,7 @@ func (cr *CustomerRepository) FindAll(ctx context.Context) (result []domain.Cust
 	return
 }
 
-func (cr *CustomerRepository) FindById(ctx context.Context, id string) (result domain.Customer,err error) {
+func (cr *CustomerRepository) FindById(ctx context.Context, id string) (result domain.Customer, err error) {
 	dataset := cr.db.From("customers").Where(goqu.C("delete_at").IsNull(), goqu.C("id").Eq(id))
 	_, err = dataset.ScanStructContext(ctx, &result)
 	return
@@ -43,10 +43,11 @@ func (cr *CustomerRepository) Create(ctx context.Context, c *domain.Customer) er
 
 func (cr *CustomerRepository) Update(ctx context.Context, c *domain.Customer) error {
 	executor := cr.db.Update("customers").Where(goqu.C("id").Eq(c.ID)).Set(c).Executor()
-	_, err :=executor.ExecContext(ctx)
+	_, err := executor.ExecContext(ctx)
 	return err
 }
 
 func (cr *CustomerRepository) Delete(ctx context.Context, id string) error {
-	executor := cr.db.Update("customers").Where(goqu.C("id").Eq(c.ID)).Set(c).Executor()
+	executor := cr.db.Update("customers").
+		Where(goqu.C("id").Eq(id)).Set(goqu.Record{"deleted_at", sql.NullTime{valid: true, Time: time.Now()}}).Executor()
 }
