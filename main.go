@@ -7,6 +7,7 @@ import (
 	"github.com/wignn/api-with-fiber/internal/config"
 	"github.com/wignn/api-with-fiber/internal/connection"
 	"github.com/wignn/api-with-fiber/internal/repository"
+	"github.com/wignn/api-with-fiber/internal/service"
 )
 
 func main() {
@@ -17,10 +18,9 @@ func main() {
 
 	CustomerRepository := repository.NewCustomer(dbConnection)
 	
-	app.Get("/developers", developers) 
-	app.Get("/", Work)
-	fmt.Println("Server running at  http://127.0.0.1:3000") 
-	app.Listen(":3000")
+	customerService = service.NewCustomer(CustomerRepository)
+
+	_= app.Listen(cnf.Server.Host + ":" + cnf.Server.Port)
 }
 
 func Work(ctx *fiber.Ctx) error {
