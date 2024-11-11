@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"time"
-
 	"github.com/doug-martin/goqu/v9"
 	"github.com/wignn/api-with-fiber/domain"
 )
@@ -35,10 +34,6 @@ func (cr *CustomerRepository) FindById(ctx context.Context, id string) (result d
 	dataset := cr.db.From("customers").Where(goqu.C("delete_at").IsNull(), goqu.C("id").Eq(id))
 	_, err = dataset.ScanStructContext(ctx, &result)
 	return
-}
-
-func (cr *CustomerRepository) Create(ctx context.Context, c *domain.Customer) error {
-	panic("not implemented")
 }
 
 func (cr *CustomerRepository) Update(ctx context.Context, c *domain.Customer) error {
