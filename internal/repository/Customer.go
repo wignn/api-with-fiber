@@ -42,9 +42,11 @@ func (cr *CustomerRepository) Create(ctx context.Context, c *domain.Customer) er
 }
 
 func (cr *CustomerRepository) Update(ctx context.Context, c *domain.Customer) error {
-	panic("not implemented")
+	executor := cr.db.Update("customers").Where(goqu.C("id").Eq(c.ID)).Set(c).Executor()
+	_, err :=executor.ExecContext(ctx)
+	return err
 }
 
 func (cr *CustomerRepository) Delete(ctx context.Context, id string) error {
-	panic("not implemented")
+	executor := cr.db.Update("customers").Where(goqu.C("id").Eq(c.ID)).Set(c).Executor()
 }
